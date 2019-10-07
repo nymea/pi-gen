@@ -1,0 +1,4 @@
+IMG_NAME=nymea-buster
+FIRST_USER_NAME="nymea"
+FIRST_USER_PASS="nymea"
+ENABLE_SSH=1
