@@ -1,5 +1,5 @@
 # Add nymea repository
-echo -e "\n## nymea repo\ndeb http://repository.nymea.io buster main raspbian\n#deb-src http://repository.nymea.io buster main raspbian" | tee /etc/apt/sources.list.d/nymea.list
+echo -e "\n## nymea repo\ndeb http://repository.nymea.io buster rpi\n#deb-src http://repository.nymea.io buster rpi" | tee /etc/apt/sources.list.d/nymea.list
 wget -qO - http://repository.nymea.io/repository-pubkey.gpg | apt-key add -
 
 # Set repository priority (prefer packages from raspbian section)
