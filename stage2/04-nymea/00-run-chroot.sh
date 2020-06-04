@@ -55,6 +55,9 @@ echo dtoverlay=vc4-fkms-v3d >> /boot/config.txt
 # Get away with the low voltage warning
 echo avoid_warnings=1 >> /boot/config.txt
 
+# Enable ttyS0 uart on GPIO header
+echo enable_uart=1 >> /boot/config.txt
+
 # Drop packages conflicting with network-manager
 apt-get purge --yes openresolv dhcpcd5
 
