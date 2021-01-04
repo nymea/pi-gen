@@ -18,7 +18,7 @@ ALIGN="$((4 * 1024 * 1024))"
 # some overhead (since actual space usage is usually rounded up to the
 # filesystem block size) and gives some free space on the resulting
 # image.
-ROOT_MARGIN=$((800*1024*1024))
+ROOT_MARGIN="$(echo "($ROOT_SIZE * 0.2 + 200 * 1024 * 1024) / 1" | bc)"
 
 BOOT_PART_START=$((ALIGN))
 BOOT_PART_SIZE=$(((BOOT_SIZE + ALIGN - 1) / ALIGN * ALIGN))
@@ -39,8 +39,32 @@ BOOT_LENGTH=$(echo "$PARTED_OUT" | grep -e '^1:' | cut -d':' -f 4 | tr -d B)
 ROOT_OFFSET=$(echo "$PARTED_OUT" | grep -e '^2:' | cut -d':' -f 2 | tr -d B)
 ROOT_LENGTH=$(echo "$PARTED_OUT" | grep -e '^2:' | cut -d':' -f 4 | tr -d B)
 
-BOOT_DEV=$(losetup --show -f -o "${BOOT_OFFSET}" --sizelimit "${BOOT_LENGTH}" "${IMG_FILE}")
-ROOT_DEV=$(losetup --show -f -o "${ROOT_OFFSET}" --sizelimit "${ROOT_LENGTH}" "${IMG_FILE}")
+echo "Mounting BOOT_DEV..."
+cnt=0
+until BOOT_DEV=$(losetup --show -f -o "${BOOT_OFFSET}" --sizelimit "${BOOT_LENGTH}" "${IMG_FILE}"); do
+	if [ $cnt -lt 5 ]; then
+		cnt=$((cnt + 1))
+		echo "Error in losetup for BOOT_DEV.  Retrying..."
+		sleep 5
+	else
+		echo "ERROR: losetup for BOOT_DEV failed; exiting"
+		exit 1
+	fi
+done
+
+echo "Mounting ROOT_DEV..."
+cnt=0
+until ROOT_DEV=$(losetup --show -f -o "${ROOT_OFFSET}" --sizelimit "${ROOT_LENGTH}" "${IMG_FILE}"); do
+	if [ $cnt -lt 5 ]; then
+		cnt=$((cnt + 1))
+		echo "Error in losetup for ROOT_DEV.  Retrying..."
+		sleep 5
+	else
+		echo "ERROR: losetup for ROOT_DEV failed; exiting"
+		exit 1
+	fi
+done
+
 echo "/boot: offset $BOOT_OFFSET, length $BOOT_LENGTH"
 echo "/:     offset $ROOT_OFFSET, length $ROOT_LENGTH"
 
