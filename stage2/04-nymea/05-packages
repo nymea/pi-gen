@@ -1,4 +1,5 @@
 nymea
 nymea-plugins
 nymea-networkmanager
-nymea-app-kiosk
+nymea-app-kiosk-wayland
+nymea-splashscreen
