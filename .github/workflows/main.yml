@@ -1,0 +1,27 @@
+name: nymea Raspberry Image
+
+on:
+  push:
+    branches:
+    - master
+    - nymea-bullseye
+  workflow_dispatch:
+
+jobs:
+  image:
+    name: build image
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v3
+    - name: setup build environment
+      uses: docker/setup-qemu-action@v3.0.0
+    - name: build
+      run: |
+        ls -la
+        ./build-docker.sh
+        ls -la
+    - name: archive artifacts
+      uses: actions/upload-artifact@v3.1.3
+      with:
+        name: nymea image
+        path: deploy/image*zip
