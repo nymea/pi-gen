@@ -1,5 +1,5 @@
 # Add nymea repository
-echo -e "\n## nymea repo\ndeb http://repository.nymea.io/experimental bookworm main\n#deb-src http://repository.nymea.io/experimental booworm main" | tee /etc/apt/sources.list.d/nymea.list
+echo -e "\n## nymea repo\ndeb http://repository.nymea.io bookworm main\n#deb-src http://repository.nymea.io booworm main" | tee /etc/apt/sources.list.d/nymea.list
 wget -O /etc/apt/trusted.gpg.d/nymea.gpg https://repository.nymea.io/nymea.gpg
 
 apt-get update
