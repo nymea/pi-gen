@@ -1,23 +1,26 @@
 # Add nymea repository
-echo -e "\n## nymea repo\ndeb http://repository.nymea.io bookworm main\n#deb-src http://repository.nymea.io booworm main" | tee /etc/apt/sources.list.d/nymea.list
-wget -O /etc/apt/trusted.gpg.d/nymea.gpg https://repository.nymea.io/nymea.gpg
+cat <<EOM > /etc/apt/sources.list.d/nymea.sources
+Types: deb deb-src
+URIs: http://repository.nymea.io
+Suites: trixie
+Components: main
+Signed-By: /etc/apt/trusted.gpg.d/nymea.gpg
+EOM
+
+wget -O /etc/apt/trusted.gpg.d/nymea.gpg https://repository.nymea.io/repository.gpg
 
 apt-get update
 
 cat <<EOM > /etc/motd
-     .
-     ++,
-    |\`--\`+-.
-     \`\`--\`-++. .;;+.
-     \\\`\`--*++++;;;/@\\          _ __  _   _ _ __ ___   ___  __ _
-      \\\`*#;.++++\\;+|/         | '_ \| | | | '_ \` _ \\ / _ \\/ _\` |
-       \`-###+++++;\`           | | | | |_| | | | | | |  __/ (_| |
-          /###+++             |_| |_|\__, |_| |_| |_|\___|\__,_|
-          |+++#\`                      __/ |
-          \`###+.                     |___/
-           \`###+
-             \`#+
-               \`
+
+
+      _ __  _   _ _ __ ___   ___  __ _
+     | '_ \| | | | '_ ` _ \ / _ \/ _` |
+     | | | | |_| | | | | | |  __/ (_| |
+     |_| |_|\__, |_| |_| |_|\___|\__,_|
+             __/ |
+            |___/
+
 EOM
 
 cat <<EOM > /etc/machine-info
@@ -25,11 +28,11 @@ PRETTY_HOSTNAME=nymea
 EOM
 
 cat <<EOM > /etc/issue.net
-nymea - nymea.io | Debian GNU/Linux 12
+nymea - nymea.io | Debian GNU/Linux 13
 EOM
 
 cat <<EOM > /etc/issue
-nymea - nymea.io | Debian GNU/Linux 12  \n \l
+nymea - nymea.io | Debian GNU/Linux 13  \n \l
 EOM
 
 # Change hostname to nymea

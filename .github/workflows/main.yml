@@ -10,7 +10,7 @@ on:
 jobs:
   image:
     name: build image
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v3
     - name: setup build environment
@@ -22,7 +22,7 @@ jobs:
         ls -la
         sudo apt-get install qemu-user-static
         echo Setting repository to \"${{ github.event.inputs.stage }}\"
-        sed -i 's/repository.nymea.io bookworm/repository.nymea.io experimental bookworm/g' nymea/00-sys-tweaks/00-run-chroot.sh
+        sed -i 's/repository.nymea.io trixie/repository.nymea.io experimental trixie/g' nymea/00-sys-tweaks/00-run-chroot.sh
         ./build-docker.sh
         ls -la
     - name: archive artifacts
