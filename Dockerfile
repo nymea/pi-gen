@@ -11,6 +11,9 @@ RUN apt-get -y update && \
         binfmt-support ca-certificates fdisk gpg pigz arch-test \
     && rm -rf /var/lib/apt/lists/*
 
+RUN curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | \
+    sh -s -- -b /usr/local/bin
+
 COPY . /pi-gen/
 
 VOLUME [ "/pi-gen/work", "/pi-gen/deploy"]
