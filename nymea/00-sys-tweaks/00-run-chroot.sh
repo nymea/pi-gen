@@ -3,7 +3,7 @@ cat <<EOM > /etc/apt/sources.list.d/nymea.sources
 Types: deb deb-src
 URIs: http://repository.nymea.io
 Suites: trixie
-Components: main
+Components: main non-free
 Signed-By: /etc/apt/trusted.gpg.d/nymea.gpg
 EOM
 
