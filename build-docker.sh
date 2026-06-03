@@ -105,20 +105,33 @@ time ${DOCKER} run \
   $DOCKER_CMDLINE_POST \
   pi-gen \
   bash -e -o pipefail -c "
-    mount -t binfmt_misc binfmt_misc /proc/sys/fs/binfmt_misc || true
-    # Use the host's arm64 registration if it works in here; otherwise register
-    # the image's own (static) qemu-aarch64 for the duration of the build, replacing
-    # any stale entry of ours. The newest entry is the one the kernel matches.
-    # Probe inside an empty chroot: a host entry without the F flag resolves its
-    # interpreter in the caller's filesystem, so it works in the container root
-    # but fails in every chroot the build makes.
-    if ! arch-test -c \"\$(mktemp -d)\" arm64; then
-      [ ! -e /proc/sys/fs/binfmt_misc/qemu-aarch64-rpi ] || echo -1 > /proc/sys/fs/binfmt_misc/qemu-aarch64-rpi
-      echo ':qemu-aarch64-rpi:M::\x7fELF\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\xb7\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-aarch64:F' > /proc/sys/fs/binfmt_misc/register
-      trap 'echo -1 > /proc/sys/fs/binfmt_misc/qemu-aarch64-rpi' EXIT
-    fi
-    cd /pi-gen
-    ./build.sh ${BUILD_OPTS}
+#    mount -t binfmt_misc binfmt_misc /proc/sys/fs/binfmt_misc || true
+#    # Use the host's arm64 registration if it works in here; otherwise register
+#    # the image's own (static) qemu-aarch64 for the duration of the build, replacing
+#    # any stale entry of ours. The newest entry is the one the kernel matches.
+#    # Probe inside an empty chroot: a host entry without the F flag resolves its
+#    # interpreter in the caller's filesystem, so it works in the container root
+#    # but fails in every chroot the build makes.
+#    if ! arch-test -c \"\$(mktemp -d)\" arm64; then
+#      [ ! -e /proc/sys/fs/binfmt_misc/qemu-aarch64-rpi ] || echo -1 > /proc/sys/fs/binfmt_misc/qemu-aarch64-rpi
+#      echo ':qemu-aarch64-rpi:M::\x7fELF\x02\x01\x01\x00\x00\x00\x00\x00\x00\x00\x00\x00\x02\x00\xb7\x00:\xff\xff\xff\xff\xff\xff\xff\x00\xff\xff\xff\xff\xff\xff\xff\xff\xfe\xff\xff\xff:/usr/bin/qemu-aarch64:F' > /proc/sys/fs/binfmt_misc/register
+#      trap 'echo -1 > /proc/sys/fs/binfmt_misc/qemu-aarch64-rpi' EXIT
+#    fi
+#    cd /pi-gen
+#    ./build.sh ${BUILD_OPTS}
+    # binfmt_misc is sometimes not mounted with debian trixie image
+    (mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc || true) &&
+    if [ -e /proc/sys/fs/binfmt_misc/qemu-aarch64 ] &&
+       ! grep -q '^flags: .*F' /proc/sys/fs/binfmt_misc/qemu-aarch64; then
+      echo 'Resetting qemu-aarch64 binfmt entry without fix-binary flag...'
+      echo -1 > /proc/sys/fs/binfmt_misc/qemu-aarch64
+    fi &&
+    dpkg-reconfigure qemu-user-binfmt &&
+    if ! grep -q '^flags: .*F' /proc/sys/fs/binfmt_misc/qemu-aarch64; then
+      echo 'qemu-aarch64 binfmt entry is missing the fix-binary flag'
+      exit 1
+    fi &&
+    cd /pi-gen; ./build.sh ${BUILD_OPTS} &&
     rsync -av work/*/build.log deploy/
   " &
   wait "$!"
