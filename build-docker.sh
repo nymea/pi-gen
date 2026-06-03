@@ -141,9 +141,18 @@ time ${DOCKER} run \
   $DOCKER_CMDLINE_POST \
   pi-gen \
   bash -e -o pipefail -c "
-    dpkg-reconfigure qemu-user-binfmt &&
     # binfmt_misc is sometimes not mounted with debian trixie image
     (mount binfmt_misc -t binfmt_misc /proc/sys/fs/binfmt_misc || true) &&
+    if [ -e /proc/sys/fs/binfmt_misc/qemu-aarch64 ] &&
+       ! grep -q '^flags: .*F' /proc/sys/fs/binfmt_misc/qemu-aarch64; then
+      echo 'Resetting qemu-aarch64 binfmt entry without fix-binary flag...'
+      echo -1 > /proc/sys/fs/binfmt_misc/qemu-aarch64
+    fi &&
+    dpkg-reconfigure qemu-user-binfmt &&
+    if ! grep -q '^flags: .*F' /proc/sys/fs/binfmt_misc/qemu-aarch64; then
+      echo 'qemu-aarch64 binfmt entry is missing the fix-binary flag'
+      exit 1
+    fi &&
     cd /pi-gen; ./build.sh ${BUILD_OPTS} &&
     rsync -av work/*/build.log deploy/
   " &
