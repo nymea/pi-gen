@@ -1,4 +1,7 @@
 nymea
+nymea-networkmanager
+nymea-update-plugin-packagekit
+nymea-experience-plugin-energy
 nymea-plugin-anel
 nymea-plugin-aqi
 nymea-plugin-bose
@@ -21,7 +24,6 @@ nymea-plugin-networkdetector
 nymea-plugin-openuv
 nymea-plugin-openweathermap
 nymea-plugin-philipshue
-nymea-plugin-pushbullet
 nymea-plugin-pushnotifications
 nymea-plugin-shelly
 nymea-plugin-sma
@@ -37,6 +39,4 @@ nymea-plugin-yamahaavr
 nymea-plugins-zigbee
 nymea-plugins-zwave
 nymea-plugins-genericthings
-nymea-networkmanager
-nymea-experience-plugin-energy
 systemd-timesyncd
