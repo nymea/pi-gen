@@ -11,7 +11,7 @@ wget -O /etc/apt/trusted.gpg.d/nymea.gpg https://repository.nymea.io/repository.
 
 apt-get update
 
-cat <<EOM > /etc/motd
+cat <<'EOM' > /etc/motd
 
 
       _ __  _   _ _ __ ___   ___  __ _
