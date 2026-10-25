@@ -6,7 +6,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get -y update && \
     apt-get -y install --no-install-recommends \
         git vim parted \
-        quilt coreutils qemu-user debootstrap zerofree zip dosfstools e2fsprogs\
+        quilt coreutils qemu-user qemu-user-binfmt debootstrap zerofree zip dosfstools e2fsprogs\
         libcap2-bin rsync grep udev xz-utils curl xxd file kmod bc \
         ca-certificates fdisk gpg pigz arch-test \
     && rm -rf /var/lib/apt/lists/*

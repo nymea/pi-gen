@@ -131,7 +131,7 @@ time ${DOCKER} run \
       echo 'qemu-aarch64 binfmt entry is missing the fix-binary flag'
       exit 1
     fi &&
-    cd /pi-gen; ./build.sh ${BUILD_OPTS} &&
+    cd /pi-gen && ./build.sh ${BUILD_OPTS} &&
     rsync -av work/*/build.log deploy/
   " &
   wait "$!"
