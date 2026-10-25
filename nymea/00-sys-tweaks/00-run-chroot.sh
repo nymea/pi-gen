@@ -40,12 +40,12 @@ echo nymea > /etc/hostname
 sed -i 's/localhost/localhost nymea/' /etc/hosts
 
 # Enable i2c
-echo dtparam=i2c_arm=on >> /boot/config.txt
+echo dtparam=i2c_arm=on >> /boot/firmware/config.txt
 echo i2c-dev >> /etc/modules
 
 # Enable UART (For RaspBee and similar headers)
-echo enable_uart=1 >> /boot/config.txt
-sed -i 's/console=serial0,115200 //' /boot/cmdline.txt
+echo enable_uart=1 >> /boot/firmware/config.txt
+sed -i 's/console=serial0,115200 //' /boot/firmware/cmdline.txt
 
 # Disable BlueZ plugins QtBluetooth can't deal with
 mkdir /etc/systemd/system/bluetooth.service.d
