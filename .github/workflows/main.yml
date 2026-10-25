@@ -18,11 +18,18 @@ jobs:
       with:
         platforms: arm64
     - name: build
+      env:
+        NYMEA_STAGE: ${{ github.event.inputs.stage }}
       run: |
         ls -la
         sudo apt-get install qemu-user-static
-        echo Setting repository to \"${{ github.event.inputs.stage }}\"
-        sed -i 's/repository.nymea.io trixie/repository.nymea.io experimental trixie/g' nymea/00-sys-tweaks/00-run-chroot.sh
+        case "$NYMEA_STAGE" in
+          "") repository_uri="http://repository.nymea.io" ;;
+          landing|experimental) repository_uri="http://repository.nymea.io/$NYMEA_STAGE" ;;
+          *) echo "Invalid repository stage: $NYMEA_STAGE" >&2; exit 1 ;;
+        esac
+        echo "Setting repository to $repository_uri"
+        sed -i "s|^URIs: .*|URIs: $repository_uri|" nymea/00-sys-tweaks/00-run-chroot.sh
         ./build-docker.sh
         ls -la
     - name: archive artifacts
