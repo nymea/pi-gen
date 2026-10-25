@@ -1,1 +1,3 @@
 Acquire::http { Proxy "APT_PROXY"; };
+// Avoid apt-cacher-ng connection failures when fetching nymea packages.
+Acquire::http::Proxy::repository.nymea.io "DIRECT";
